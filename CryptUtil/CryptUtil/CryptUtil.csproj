@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MessageBoxExLibrary">
+      <HintPath>.\MessageBoxExLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="SharpShell">
       <HintPath>.\SharpShell.dll</HintPath>
     </Reference>

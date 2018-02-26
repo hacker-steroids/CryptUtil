@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MessageBoxExLibrary;
 
 namespace CryptUtil {
     [ComVisible(true)]
@@ -41,7 +42,18 @@ namespace CryptUtil {
                 File.WriteAllBytes(file, enc);
 
                 if (enc.Length != 0) {
-                    MessageBox.Show("Key:\n" + Program.GetByteArrayAsIs(key), $"Success: {file}!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    string strKey = Program.GetByteArrayAsIs(key);
+
+                    MessageBoxEx bx = MessageBoxExManager.CreateMessageBox("success");
+                    bx.AddButton("OK", "OK");
+                    bx.AddButton("Copy to clipboard", "cpyclip");
+                    bx.AllowSaveResponse = true;
+                    bx.Text = "Key:\n" + strKey;
+                    bx.Caption = $"Success: {file}!";
+                    bx.Icon = MessageBoxExIcon.Information;
+
+                    if (bx.Show() == "cpyclip")
+                        Clipboard.SetText(strKey);
                 } else {
                     MessageBox.Show("Error while encrypting :(", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
