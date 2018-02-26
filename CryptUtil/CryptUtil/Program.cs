@@ -171,7 +171,9 @@ namespace CryptUtil {
             return hex.ToString();
         }
 
-        internal static byte[] EncryptBytes(byte[] plain, byte[] Key, out byte[] IV) {
+        internal static byte[] EncryptBytes(byte[] plain, byte[] Key, out byte[] IV, PaddingMode paddingMode = PaddingMode.None) {
+            if ((plain.Length % Key.Length) != 0)
+                paddingMode = PaddingMode.PKCS7;
             byte[] encrypted;
             byte[] full;
             using (MemoryStream mstream = new MemoryStream()) {
@@ -179,7 +181,7 @@ namespace CryptUtil {
                     aesProvider.KeySize = 128;
                     aesProvider.BlockSize = 128;
                     aesProvider.Mode = CipherMode.CBC;
-                    aesProvider.Padding = PaddingMode.None;
+                    aesProvider.Padding = paddingMode;
                     aesProvider.GenerateIV();
                     IV = aesProvider.IV;
                     aesProvider.Key = Key;
@@ -195,8 +197,10 @@ namespace CryptUtil {
             return full;
         }
 
-        internal static byte[] DecryptBytes(byte[] encrypted, byte[] Key) {
+        internal static byte[] DecryptBytes(byte[] encrypted, byte[] Key, PaddingMode paddingMode = PaddingMode.None) {
             try {
+                if ((encrypted.Length % Key.Length) != 0)
+                    paddingMode = PaddingMode.PKCS7;
                 byte[] IV = new byte[16];
                 Array.ConstrainedCopy(encrypted, encrypted.Length - 16, IV, 0, 16);
                 byte[] plain = new byte[encrypted.Length - IV.Length];
@@ -206,7 +210,7 @@ namespace CryptUtil {
                         aesProvider.KeySize = 128;
                         aesProvider.BlockSize = 128;
                         aesProvider.Mode = CipherMode.CBC;
-                        aesProvider.Padding = PaddingMode.PKCS7;
+                        aesProvider.Padding = paddingMode;
                         using (CryptoStream cryptoStream = new CryptoStream(mStream, aesProvider.CreateDecryptor(Key, IV), CryptoStreamMode.Read)) {
                             cryptoStream.Read(segment.Array, 0, encrypted.Length);
                         }
