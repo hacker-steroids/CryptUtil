@@ -45,15 +45,23 @@ namespace CryptUtil {
                     string strKey = Program.GetByteArrayAsIs(key);
 
                     MessageBoxEx bx = MessageBoxExManager.CreateMessageBox("success");
+
+                    MessageBoxExButton btnClipbd = new MessageBoxExButton {
+                        Text = "Copy to clipboard",
+                        Value = "cpyclip",
+                        IsCancelButton = false,
+                        Click = () => {
+                            Clipboard.SetText(strKey);
+                        }
+                    };
+
                     bx.AddButton("OK", "OK");
-                    bx.AddButton("Copy to clipboard", "cpyclip");
-                    bx.AllowSaveResponse = true;
+                    bx.AddButton(btnClipbd);
+
+                    bx.AllowSaveResponse = false;
                     bx.Text = "Key:\n" + strKey;
                     bx.Caption = $"Success: {file}!";
                     bx.Icon = MessageBoxExIcon.Information;
-
-                    if (bx.Show() == "cpyclip")
-                        Clipboard.SetText(strKey);
                 } else {
                     MessageBox.Show("Error while encrypting :(", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
