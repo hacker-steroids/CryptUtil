@@ -26,7 +26,7 @@ namespace CryptUtil {
                 Text = "[CryptUtil] Quick encrypt",
             };
 
-            itemEnc.Click += (sender, args) => Encrypt();
+            itemEnc.Click += (s, e) => Encrypt();
 
             menu.Items.Add(itemEnc);
 
